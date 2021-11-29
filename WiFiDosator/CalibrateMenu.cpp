@@ -52,11 +52,11 @@ void drawCalibrateMenu(Adafruit_SSD1306& display)
         break;
       }
       case CALIBRATE_SAVE: {
-        double currentValue = double(Channels[calibrateMenu.selected].Settings.CalibrationDelay) / 5000.;
-        double newValue = double(Channels[calibrateMenu.selected].isOnFor()) / 5000.;
+        double currentValue = double(Channels[calibrateMenu.selected].Settings.CalibrationDelay) / (CALIBRATION_PRECISION * 1000.);
+        double newValue = double(Channels[calibrateMenu.selected].isOnFor()) / (CALIBRATION_PRECISION * 1000.);
         display.setCursor(0, 17);
         display.printf(TXT_SAVE_CALIBRATION_RESULT_QUESTION_FMT, calibrateMenu.selected + 1, currentValue, newValue);
-        break;        
+        break;
       }
       default: {
         display.println(textById(TXT_ERROR_RESTART_ID));
@@ -70,7 +70,7 @@ void handleCalibrateMenuCommand(uint8_t& cmd) {
   {
     case CALIBRATE_NOT_STARTED: {
       if (cmd == MENU_UP || cmd == MENU_DOWN) {
-        calibrateMenu.selected = ++ calibrateMenu.selected % 2;  
+        calibrateMenu.selected = ++ calibrateMenu.selected % 2;
       } else if (cmd == MENU_ENTER) {
         calibrateState = CHANNEL_SELECTED;
       } else if (cmd == MENU_LEAVE) {

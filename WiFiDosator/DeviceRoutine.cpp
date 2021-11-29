@@ -9,12 +9,13 @@ DeviceRoutine::DeviceRoutine(uint8_t channel)
 {}
 
 void DeviceRoutine::loop()  {
-  
+
   if ((int) channel().TimesProperty.CurrentValue > 0)
   {
       DeviceState last = CurrentState;
       CurrentState = DeviceState::Working;
-      uint32_t EndAt = millis() + channel().Settings.CalibrationDelay * channel().TimesProperty.CurrentValue;
+      double currentValue = double(channel().Settings.CalibrationDelay) / (CALIBRATION_PRECISION * 1000.);
+      uint32_t EndAt = millis() + currentValue * channel().TimesProperty.CurrentValue;
       while(channel().TimesProperty.CurrentValue-- > 0)
       {
           digitalWrite(channel().Pin, HIGH);
