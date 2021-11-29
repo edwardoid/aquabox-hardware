@@ -2,10 +2,9 @@
 #include "Canvas.h"
 #include "Channel.h"
 #include "WelcomeMenu.h"
-
-#define SCREEN_WIDTH 128 // OLED display width, in pixels
-#define SCREEN_HEIGHT 64 // OLED display height, in pixels
-
+#include "NetworkMenu.h"
+#include "FillMenu.h"
+#include "CalibrateMenu.h"
 
 UIRoutine::UIRoutine()
   : m_screenIdx(0)
@@ -17,22 +16,45 @@ UIRoutine::UIRoutine()
 
 void UIRoutine::setup()
 {
-  CurrentMenu = &welcome;
   Canvas.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  Canvas.display();
 }
-void UIRoutine::loop()  {
-  static unsigned long  fps = millis();
-  if (m_render || millis() - fps > 200) {
-    m_render = false; 
-    Canvas.clearDisplay(); // Clear display buffer
-    
-    CurrentMenu->renderer(Canvas);
 
-    drawStatusBar(Canvas);
-
-    Canvas.display();
-    fps = millis();
-  } else {
-    yield();
+Menu& UIRoutine::currentMenu()
+{
+  switch(m_screens[m_screenIdx])
+  {
+    case UIScreenId::FillInstructions:
+    case UIScreenId::Filling:
+    {
+      return fillMenu;
+    }
+    case UIScreenId::NetworkSetup:
+    {
+      return networkMenu;
+    }
+    case UIScreenId::Calibrate:
+    {
+      return calibrateMenu;
+    }
+    case UIScreenId::Default:
+    default: {
+    }
   }
+  return welcomeMenu;
+}
+
+void UIRoutine::loop()  {
+  Serial.println(__FILE__);
+  Canvas.clearDisplay(); // Clear display buffer
+
+  currentMenu().renderer(Canvas);
+
+  drawStatusBar(Canvas);
+
+  Canvas.display();
+  
+  m_render = false;
+
+  delay(UI_RENDER_WAIT_MS);
 }

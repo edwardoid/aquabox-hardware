@@ -6,13 +6,15 @@
 #include "Menu.h"
 #include <Adafruit_SSD1306.h>
 #include <Scheduler.h>
+#include <ESP8266WiFi.h>
 
-enum class UIScreenId
+enum class UIScreenId: uint8_t
 {
     Default,
+    NetworkSetup,
     FillInstructions,
     Filling,
-    Calibrating,
+    Calibrate,
     SavingSettings
 };
 
@@ -34,7 +36,10 @@ public:
         m_render = true;
     }
     inline void markDirty() { m_render = true; }
+    inline bool shouldRun() { return Task::shouldRun() || m_render;  }
+    void handleCommand(uint8_t& command) { currentMenu().commandHandler(command); }    
 protected:
+    Menu& currentMenu();
     inline virtual void setup() override;
     inline virtual void loop() override;
 private:

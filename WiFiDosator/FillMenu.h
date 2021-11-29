@@ -3,6 +3,6 @@
 
 #include "Menu.h"
 
-extern Menu fill;
+extern Menu fillMenu;
 
 #endif // fill_MENU_H

@@ -48,8 +48,6 @@ bool Slave::processNextMessage()
     getResult = m_io->get(rcv);
     Message rpl;
     if (dispatch(&rcv, &rpl)) {
-        std::cout << "Got message! Command" << (int)rcv.payload.command.command
-                  << std::endl;
         m_io->send(rpl);
     }
     return getResult;

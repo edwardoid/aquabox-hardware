@@ -1,19 +1,20 @@
 #ifndef MENU_H
 #define MENU_H
 
+#include "GlobalConfigs.h"
 #include <Adafruit_SSD1306.h>
 
+void handleCommandDoNothing(uint8_t&);
+
 struct Menu {
-  uint8_t entriesCount;
-  uint8_t selected;
+  uint8_t entriesCount = 0;
+  uint8_t selected = 0;
   typedef void (*Renderer)(Adafruit_SSD1306&);
   typedef void (*CommandHanler)(uint8_t&);
-  Renderer renderer;
-  CommandHanler commandHandler;
+  Renderer renderer = NULL;
+  CommandHanler commandHandler = NULL;
   volatile uint8_t entries[];
 };
-
-#define MAX_VISIBLE_MENU_ENTRIES 4
 
 extern void drawStatusBar(Adafruit_SSD1306& display);
 extern void drawSimpleMenu(Adafruit_SSD1306& display, Menu* menu);
@@ -25,7 +26,5 @@ extern void drawSimpleMenu(Adafruit_SSD1306& display, Menu* menu);
 #ifndef drawNormal
 #define drawNormal(text, display, line) { display . setCursor(6, 2 + 16 + (line) * 10);  display . setTextColor(WHITE); display . println(text); }
 #endif // drawNormal
-
-extern Menu* CurrentMenu;
 
 #endif // MENU_H

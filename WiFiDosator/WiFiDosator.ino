@@ -1,4 +1,3 @@
-
 #include <Arduino.h>
 #include <HardwareSerial.h>
 #include "GlobalConfigs.h"
@@ -10,8 +9,14 @@
 
 void setup()
 {
-    CurrentState = DeviceState::Starting;
     Serial.begin(115200);
+    Settings.begin();
+    Channels[0].Stepper.setSerial(AllSettings.Channel1.Serial);
+    Channels[0].Stepper.setSerial(AllSettings.Channel1.Token);
+
+    Channels[1].Stepper.setSerial(AllSettings.Channel2.Serial);
+    Channels[1].Stepper.setSerial(AllSettings.Channel2.Token);
+    CurrentState = DeviceState::Starting;
     //gdbstub_init();
     
     Settings.begin();
@@ -21,7 +26,6 @@ void setup()
     Scheduler.start(&IO0);
     Scheduler.start(&IO1);
     Scheduler.start(&Controls);
-    Scheduler.start(&Calibration);
     Scheduler.start(&UI);
     
     Scheduler.begin();

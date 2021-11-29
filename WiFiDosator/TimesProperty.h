@@ -7,7 +7,7 @@ struct Times: public aquabox::proto::CachedSlaveProperty<int32_t>
 public:
     volatile int32_t CurrentValue;
 
-    Times() : aquabox::proto::CachedSlaveProperty<int32_t>("times", (int32_t) CurrentValue), CurrentValue(0) {}
+    Times(uint8_t pin) : aquabox::proto::CachedSlaveProperty<int32_t>("times", (int32_t) CurrentValue), CurrentValue(0), m_pin(pin) { pinMode(m_pin, OUTPUT); }
     
     virtual bool set(const aquabox::proto::ValueData& in) override
     {
@@ -16,8 +16,9 @@ public:
           Serial.print("Updated value to ");
           Serial.println(value);
           CurrentValue = value;
-          if (value == 0)
-            digitalWrite(D5, LOW);
+          if (value == 0) {
+            digitalWrite(m_pin, LOW);
+          }
           return true;
         }
         return false;
@@ -39,6 +40,8 @@ public:
         }
         return false;
     }
+private:
+  uint8_t m_pin;
 };
 
 #endif // TIMES_PROPERTY_H

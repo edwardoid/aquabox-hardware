@@ -3,6 +3,6 @@
 
 #include "Menu.h"
 
-extern Menu network;
+extern Menu networkMenu;
 
 #endif // NETWORK_MENU_H

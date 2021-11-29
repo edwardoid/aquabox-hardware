@@ -1,14 +1,21 @@
-#ifndef HERMES_FEEDER_H
-#define HERMES_FEEDER_H
+#ifndef HERMES_STEPPER_H
+#define HERMES_STEPPER_H
 
 #include <AquaboxProto.h>
 #include "TimesProperty.h"
 
-class HermesFeeder
+
+extern aquabox::proto::CachedSlaveProperty<uint32_t> TimesTimeoutProperty;
+extern aquabox::proto::CachedSlaveProperty<char*> ClassProperty;
+extern aquabox::proto::CachedSlaveProperty<char*> TypeProperty;
+extern aquabox::proto::CachedSlaveProperty<bool> CacheProperty;
+extern aquabox::proto::CachedSlaveProperty<int32_t> PingTimeoutProperty;
+
+class HermesStepper
 {
     struct Slave: public aquabox::proto::EasySlave<6>
     {
-      friend class HermesFeeder;
+      friend class HermesStepper;
 
       inline Slave(SlavePropertyPtr *props, aquabox::proto::IO *io, const aquabox::proto::byte_t* serial, const aquabox::proto::byte_t* token)
         : aquabox::proto::EasySlave<6>(props, io, serial, token) {  setProps(props); }
@@ -27,30 +34,25 @@ class HermesFeeder
           }
           return getResult;
       }
+
+      inline void setSerial(const aquabox::proto::byte_t* serial) { memcpy(const_cast<aquabox::proto::byte_t*>(m_serial), serial, SERIAL_LEN);  }
+      inline void setToken(const aquabox::proto::byte_t* token) { memcpy(m_token, token, TOKEN_LEN);  }
     };
     
-    static aquabox::proto::CachedSlaveProperty<uint32_t> TimesTimeoutProperty;
-    static aquabox::proto::CachedSlaveProperty<char*> ClassProperty;
-    static aquabox::proto::CachedSlaveProperty<char*> TypeProperty;
-    static aquabox::proto::CachedSlaveProperty<bool> CacheProperty;
-    static aquabox::proto::CachedSlaveProperty<int32_t> PingTimeoutProperty;
     Slave::SlavePropertyPtr Props[6];
     Slave Impl;
     
 public:
-    inline HermesFeeder(Times& TimesProperty, aquabox::proto::IO* io, aquabox::proto::byte_t* Token, aquabox::proto::byte_t* Serial)
+    inline HermesStepper(Times& TimesProperty, aquabox::proto::IO* io, aquabox::proto::byte_t* Token, aquabox::proto::byte_t* Serial)
       : Props({ &TimesProperty, &TimesTimeoutProperty, &ClassProperty, &TypeProperty, &CacheProperty, &PingTimeoutProperty })
       , Impl(Props, io, Serial, Token)
     {}
 
+    inline void setSerial(const aquabox::proto::byte_t* serial) { Impl.setSerial(serial);  }
+    inline void setToken(const aquabox::proto::byte_t* token) { Impl.setToken(token);  }
     inline bool handshake() { return Impl.handshake(); }
     inline bool processNextMessage() { return Impl.processNextMessage(); }
 };
 
-//aquabox::proto::byte_t* HermesFeeder::FEEDER_TOKEN = (aquabox::proto::byte_t*)("allow me");
-//aquabox::proto::byte_t HermesFeeder::FEEDER_SERIAL[] PROGMEM = { 't', 's', 't', 'f', 'e', 'e', 'd', 'r' };
 
-//aquabox::proto::ArduinoStreamIO HermesIO = aquabox::proto::ArduinoStreamIO();
-//HermesFeeder Feeder(TimesProperty, &HermesIO);
-
-#endif // HERMES_FEEDER_H
+#endif // HERMES_STEPPER_H

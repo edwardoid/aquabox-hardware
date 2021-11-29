@@ -7,4 +7,3 @@ DeviceRoutine Routine0(0);
 DeviceRoutine Routine1(1);
 NetworkTask Networking;
 ControlsMonitorTask Controls;
-CalibrationTask Calibration;

@@ -6,7 +6,7 @@
 
 #ifndef Button_h
 #define Button_h
-#include "Arduino.h"
+#include "GlobalConfigs.h"
 
 #define HOLD_TIMEOUT 800
 #define SINGLE_TIMEOUT 400

@@ -5,7 +5,6 @@
 */
 
 #include "Button.h"
-#include <Arduino.h>
 
 Button::Button(uint8_t pin, uint16_t debounce_ms)
 :  _pin(pin)

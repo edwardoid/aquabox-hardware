@@ -8,42 +8,44 @@
 HermesIOTask::HermesIOTask(int channelId)
   : Task()
   , m_channelId(channelId)
-{}
+{
+    Channels[m_channelId].HermesIO.init(&m_client);
+
+    m_client.setTimeout(50);
+}
 
 void HermesIOTask::setup()
 {
-    CurrentState = DeviceState::Starting;
-    Serial.begin(115200);
-    pinMode(D5, OUTPUT);
-    WiFi.mode(WIFI_STA);
     CurrentState = DeviceState::ConnectingToNetwork;
-    WiFi.begin(WIFI_NETWORK, WIFI_PASSWORD);
-    WiFi.hostname("HermesDoser");
 }
 
 void HermesIOTask::loop()
 {
-    while(WiFi.status() != WL_CONNECTED) {
-      yield();
-    }
-    WiFiClient client;
+    Serial.println(__FILE__);
     CurrentState = DeviceState::ConnectingToAquabox;
-    //yield();
-    while(!client.connect(AQUABOX_IP, AQUABOX_PORT)) {
-        delay(1000);
-        
+    if (!m_client.connected()) {
+      while(!m_client.connect(AQUABOX_IP, AQUABOX_PORT)) {
         CurrentState = DeviceState::ConnectionToAquaboxLost;
-        yield();
+        Serial.print(__FILE__);
+        Serial.println(__LINE__);
+        delay(100);
+      }
     }
-    Channels[m_channelId].HermesIO.init(&client);
-    if(!Channels[m_channelId].Feeder.handshake()) {
+    
+    if(!Channels[m_channelId].Stepper.handshake()) {
+      Serial.println("Handshake failed!");
       CurrentState = DeviceState::HandshakeFailed;
+      Serial.print(__FILE__);
+      Serial.println(__LINE__);
     }
 
     CurrentState = DeviceState::Idle;
-    while(client.connected()) {
-      Channels[m_channelId].processNextMessage();
+    while(m_client.connected()) {
+      if (m_client.available() >= sizeof(aquabox::proto::Message)) {
+        Channels[m_channelId].processNextMessage();
+        Serial.println("Processing incoming hermes message");
+      } else {
+        delay(100);
+      }
     }
-
-    client.stop();
 }

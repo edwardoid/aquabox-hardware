@@ -3,6 +3,6 @@
 
 #include "Menu.h"
 
-extern Menu welcome;
+extern Menu welcomeMenu;
 
 #endif // WELCOME_MENU_H

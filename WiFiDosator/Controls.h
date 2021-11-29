@@ -2,7 +2,12 @@
 #define CONTROLS_H
 
 #include <Scheduler.h>
-#include <Button2.h>
+
+#define MENU_NOTHING 0
+#define MENU_UP 1
+#define MENU_DOWN 2
+#define MENU_ENTER 3
+#define MENU_LEAVE 4
 
 enum class ButtonState
 {
@@ -13,6 +18,8 @@ enum class ButtonState
 
 class ControlsMonitorTask: public Task
 {
+public:
+    uint8_t LastKeyPress = MENU_NOTHING;
 protected:
     virtual void setup() override;
     inline virtual void loop() override;

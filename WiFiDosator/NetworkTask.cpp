@@ -10,9 +10,8 @@
 void NetworkTask::setup()
 {
     CurrentState = DeviceState::Starting;
-    pinMode(D5, OUTPUT);
     WiFi.mode(WIFI_STA);
-    WiFi.hostname("HermesFeeder");
+    WiFi.hostname("HermesDosator");
 
     CurrentState = DeviceState::ConnectingToNetwork;
 }
@@ -24,18 +23,16 @@ bool NetworkTask::shouldRun()
 
 void NetworkTask::loop()
 {
+  Serial.println(__FILE__);  
     if(WiFi.status() != WL_CONNECTED) {
       UI.markDirty();
       WiFi.begin(WIFI_NETWORK, WIFI_PASSWORD);
 
-      Serial.println("Connecting to WiFi");
-      int it = 0;
       while (WiFi.status() != WL_CONNECTED)
       {
           yield();
       }
 
-      Serial.println("");
       Serial.print("Connected to ");
       Serial.println(WIFI_NETWORK);
       Serial.print("IP address: ");

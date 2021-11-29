@@ -1,7 +1,7 @@
 #ifndef NETWORK_TASK_H
 #define NETWORK_TASK_H
 
-#include <Scheduler.h>
+#include "GlobalConfigs.h"
 
 class NetworkTask : public Task {
 protected:
