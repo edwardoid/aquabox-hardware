@@ -21,22 +21,18 @@ void HermesIOTask::setup()
 
 void HermesIOTask::loop()
 {
-    Serial.println(__FILE__);
     CurrentState = DeviceState::ConnectingToAquabox;
     if (!m_client.connected()) {
+      Serial.println(AQUABOX_IP);
       while(!m_client.connect(AQUABOX_IP, AQUABOX_PORT)) {
         CurrentState = DeviceState::ConnectionToAquaboxLost;
-        Serial.print(__FILE__);
-        Serial.println(__LINE__);
         delay(100);
       }
     }
     
-    if(!Channels[m_channelId].Stepper.handshake()) {
+    while(!Channels[m_channelId].Stepper.handshake()) {
       Serial.println("Handshake failed!");
       CurrentState = DeviceState::HandshakeFailed;
-      Serial.print(__FILE__);
-      Serial.println(__LINE__);
     }
 
     CurrentState = DeviceState::Idle;

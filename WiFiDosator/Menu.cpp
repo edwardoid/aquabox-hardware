@@ -37,6 +37,17 @@ const unsigned char WiFiIcon [] PROGMEM=
 	0x22, 0x00, 0x00, 0x00
 };
 
+#define BYTES_PER_ICON 20
+#define NO_SIGNAL_ICON 0
+#define LOW_SIGNAL_ICON 1
+#define MIDDLE_SIGNAL_ICON 2
+#define HIGHT_SIGNAL_ICON 3
+#define FIND_SIGNAL_ICON 4
+#define AQUABOX_CONNECTED 5
+#define AQuABOX_NOT_CONNECTED 6
+
+#define GET_ICON_BY_OFFSET(Offset) (Icons + (Offset) * BYTES_PER_ICON)
+
 const unsigned char Icons [] PROGMEM = {
 	// 'No signal (2), 10x10px
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
@@ -73,15 +84,17 @@ void drawStatusBar(Adafruit_SSD1306& display) {
     display.drawBitmap(x, 2, &(Icons[20 * i]), WIFI_ICON_WIDTH, WIFI_ICON_HEIGHT, WHITE);  
     x += 12;
   }*/
-  display.drawBitmap(2, 2, WiFiIcon, WIFI_ICON_WIDTH, WIFI_ICON_HEIGHT, WHITE);
   if (WiFi.status() == WL_CONNECTED) {
+      display.drawBitmap(0, 0, GET_ICON_BY_OFFSET(LOW_SIGNAL_ICON + (int)ceil(dBmtoPercentage(WiFi.RSSI()) / 25.)), WIFI_ICON_WIDTH, WIFI_ICON_HEIGHT, WHITE);
     if ((millis() / 1000) % 2)
       display.print(WiFi.localIP());
     else
       display.print(WiFi.SSID());
   }
-  else
+  else {
+    display.drawBitmap(0, 0, GET_ICON_BY_OFFSET(NO_SIGNAL_ICON), WIFI_ICON_WIDTH, WIFI_ICON_HEIGHT, WHITE);
     display.print(textById(TXT_NO_WIFI_CONNECTION_ID));
+  }
 }
 
 void drawSimpleMenu(Adafruit_SSD1306& display, Menu* menu) {

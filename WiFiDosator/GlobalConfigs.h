@@ -18,8 +18,8 @@
 // [ WIFI
 #define WIFI_NETWORK "Sargsyans24"
 #define WIFI_PASSWORD "azazello"
-#define AQUABOX_IP "aquaboxdev"
-#define AQUABOX_PORT 500504
+#define AQUABOX_IP "192.168.1.22"
+#define AQUABOX_PORT 2159
 // WIFI ]
 
 // [ UI

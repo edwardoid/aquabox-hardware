@@ -95,6 +95,7 @@ bool Slave::handleCommandRequest(Message* msg, Message* response)
     }
 
     case Command::Get: {
+        response->type = MessageType::Command;
         response->payload.command.command = Command::Get;
 
         const int8_t idx = propertyIndex(msg->payload.command.data.get.name);

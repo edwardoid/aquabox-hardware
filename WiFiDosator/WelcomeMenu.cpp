@@ -37,6 +37,8 @@ void handleWelcomeeMenuCommand(uint8_t& cmd)
         UI.pushScreen(UIScreenId::FillInstructions);
       } else if (welcomeMenu.selected == 3) {
         UI.pushScreen(UIScreenId::Calibrate);
+      } else if (welcomeMenu.selected == 4) {
+        ESP.restart();
       }
       break;
     }
