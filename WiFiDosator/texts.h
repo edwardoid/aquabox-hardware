@@ -25,6 +25,7 @@
 #define TXT_CALIBRATE_IN_PROGRESS_ID 17
 #define TXT_SAVE_CALIBRATION_RESULT_QUESTION_ID 18
 #define TXT_CALIBRATION_ML_SEC 19
+#define TXT_WIFI_CONNECTING_ID 20
 #define TXT_ERROR_RESTART_ID 0xFF
 
 extern const __FlashStringHelper * textById(uint8_t id);

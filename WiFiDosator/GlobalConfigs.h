@@ -10,6 +10,8 @@
 #define MIDDLE_BUTTON_MIN D4
 #define UP_BUTTON_PIN D3
 
+
+#define CHANNELS_COUNT 2
 #define PUMP_PIN_1 D6
 #define PUMP_PIN_2 D7
 #define CALIBRATION_PRECISION 5.0
@@ -18,8 +20,8 @@
 // [ WIFI
 #define WIFI_NETWORK "Sargsyans24"
 #define WIFI_PASSWORD "azazello"
-#define AQUABOX_IP "192.168.1.22"
-#define AQUABOX_PORT 2159
+#define AQUABOX_IP "aquaboxdev"
+#define AQUABOX_PORT 500507
 // WIFI ]
 
 // [ UI
@@ -53,5 +55,7 @@ enum class DeviceState
 };
 
 extern volatile DeviceState CurrentState;
+
+extern void setState(const DeviceState& state);
 
 #endif // GLOBAL_CONFIGS_H

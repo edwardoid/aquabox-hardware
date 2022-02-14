@@ -45,7 +45,6 @@ Menu& UIRoutine::currentMenu()
 }
 
 void UIRoutine::loop()  {
-  Serial.println(__FILE__);
   Canvas.clearDisplay(); // Clear display buffer
 
   currentMenu().renderer(Canvas);

@@ -5,8 +5,8 @@
 #include "HermesStepper.h"
 #include "TimesProperty.h"
 #include "Settings.h"
+#include "GlobalConfigs.h"
 
-#define CHANNELS_COUNT 2
 
 enum class ChannelState
 {

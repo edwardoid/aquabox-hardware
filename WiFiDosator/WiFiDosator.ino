@@ -10,6 +10,8 @@
 void setup()
 {
     Serial.begin(115200);
+    //gdbstub_init();
+    
     Settings.begin();
     Channels[0].Stepper.setSerial(AllSettings.Channel1.Serial);
     Channels[0].Stepper.setToken(AllSettings.Channel1.Token);
@@ -17,7 +19,6 @@ void setup()
     Channels[1].Stepper.setSerial(AllSettings.Channel2.Serial);
     Channels[1].Stepper.setToken(AllSettings.Channel2.Token);
     CurrentState = DeviceState::Starting;
-    //gdbstub_init();
     
     Scheduler.start(&Routine0);
     Scheduler.start(&Routine1);

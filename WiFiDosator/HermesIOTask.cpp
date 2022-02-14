@@ -10,38 +10,46 @@ HermesIOTask::HermesIOTask(int channelId)
   , m_channelId(channelId)
 {
     Channels[m_channelId].HermesIO.init(&m_client);
+    Channels[m_channelId].HermesIO.setPollTimeout(1000);
 
-    m_client.setTimeout(50);
+    //m_client.setTimeout(2000);
 }
 
 void HermesIOTask::setup()
 {
-    CurrentState = DeviceState::ConnectingToNetwork;
+    setState(DeviceState::ConnectingToNetwork);
 }
 
 void HermesIOTask::loop()
 {
-    CurrentState = DeviceState::ConnectingToAquabox;
-    if (!m_client.connected()) {
-      Serial.println(AQUABOX_IP);
-      while(!m_client.connect(AQUABOX_IP, AQUABOX_PORT)) {
-        CurrentState = DeviceState::ConnectionToAquaboxLost;
+    while(!m_client.connect(AQUABOX_IP, AQUABOX_PORT)) {
+      long long end = millis() + 100;
+      do {
         delay(100);
-      }
-    }
-    
-    while(!Channels[m_channelId].Stepper.handshake()) {
-      Serial.println("Handshake failed!");
-      CurrentState = DeviceState::HandshakeFailed;
+      } while(millis() < end && !m_client.connected());
     }
 
-    CurrentState = DeviceState::Idle;
+    Serial.printf("Channel %d handshaking...\n", m_channelId);
+     
+    if(!Channels[m_channelId].Stepper.handshake()) {
+      m_client.flush();
+      return;
+    }
+
+    Serial.printf("Channel %d operating...\n", m_channelId);
+
     while(m_client.connected()) {
       if (m_client.available() >= sizeof(aquabox::proto::Message)) {
+        int32_t curr = Channels[m_channelId].TimesProperty.value;
         Channels[m_channelId].processNextMessage();
-        Serial.println("Processing incoming hermes message");
+//        if (curr != Channels[m_channelId].TimesProperty.value) {
+//          Channels[m_channelId].State = ChannelState::Idle;
+//        }
+        //Serial.printf("Processing incoming hermes message on channel %d\n", m_channelId);
       } else {
-        delay(100);
+        yield();
       }
     }
+    Serial.printf("Channel %d died!\n", m_channelId);
+    m_client.flush();
 }

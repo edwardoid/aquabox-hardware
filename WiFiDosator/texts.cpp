@@ -12,7 +12,8 @@ const __FlashStringHelper * textById(uint8_t id)
       case TXT_SCANNING_ID: return F("      Scanning"); 
       case TXT_FILL_NOTIFY_ID: return F("  Press > button to    start filling");
       case TXT_FILL_IN_PROGRESS_ID: return F("Press > again to stop");
-      case TXT_NO_WIFI_CONNECTION_ID: return F("Not connectected");
+      case TXT_NO_WIFI_CONNECTION_ID: return F("Not connected");
+      case TXT_WIFI_CONNECTING_ID: return F("Connecting to Network");
       case TXT_CHANNEL_1_ID: return F("Channel 1");
       case TXT_CHANNEL_2_ID: return F("Channel 2");
       case TXT_SELECT_CHANNEL_ID: return F("Select channel:");

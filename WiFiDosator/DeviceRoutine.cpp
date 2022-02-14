@@ -16,17 +16,17 @@ void DeviceRoutine::loop()  {
       CurrentState = DeviceState::Working;
       double currentValue = double(channel().Settings.CalibrationDelay) / (CALIBRATION_PRECISION * 1000.);
       uint32_t EndAt = millis() + currentValue * channel().TimesProperty.CurrentValue;
-      while(channel().TimesProperty.CurrentValue-- > 0)
+      while(channel().TimesProperty.CurrentValue > 0)
       {
           digitalWrite(channel().Pin, HIGH);
           delay(channel().Settings.CalibrationDelay);
           channel().TimesProperty.update();
           yield();
-          Serial.print(" -> ");
-          Serial.println((int) channel().TimesProperty.CurrentValue);
+          Serial.printf("CH %d -> %d\n", m_channel, (int) channel().TimesProperty.CurrentValue);
+          --channel().TimesProperty.CurrentValue;
       }
-      channel().TimesProperty.CurrentValue = 0;
       digitalWrite(channel().Pin, LOW);
+      channel().TimesProperty.CurrentValue = 0;
       channel().TimesProperty.update();
       CurrentState = last;
   }
